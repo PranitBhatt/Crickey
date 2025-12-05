@@ -1,9 +1,9 @@
-import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
-import { getMessaging, getToken, onMessage } from 'firebase/messaging';
+import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+import { getMessaging, getToken, onMessage } from "firebase/messaging";
 
-// Firebase configuration - Replace with your actual config
+// Firebase configuration using VITE_ env variables (required by Vite + Vercel)
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -16,49 +16,45 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// Initialize services
-export const auth = getAuth(app);
+// Services
+export const auth = getAuth(app); 
 export const db = getFirestore(app);
 
-// Initialize messaging (only in browser)
+// Messaging (only if running in a browser)
 let messaging: ReturnType<typeof getMessaging> | null = null;
-if (typeof window !== 'undefined') {
+
+if (typeof window !== "undefined" && "Notification" in window) {
   try {
     messaging = getMessaging(app);
-  } catch (error) {
-    console.warn('Firebase Messaging not available:', error);
+  } catch (err) {
+    console.warn("Firebase messaging is not supported:", err);
   }
 }
 
-// Request notification permission and get token
+// Request notification permission
 export const requestNotificationPermission = async (): Promise<string | null> => {
   if (!messaging) return null;
-  
+
   try {
     const permission = await Notification.requestPermission();
-    if (permission === 'granted') {
-      const token = await getToken(messaging, {
-        vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY,
-      });
-      return token;
-    }
-    return null;
+    if (permission !== "granted") return null;
+
+    const token = await getToken(messaging, {
+      vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY,
+    });
+
+    return token;
   } catch (error) {
-    console.error('Error getting notification token:', error);
+    console.error("Error getting notification token:", error);
     return null;
   }
 };
 
-// Listen for foreground messages
-export const onMessageListener = () => {
-  if (!messaging) return Promise.resolve(null);
-  
-  return new Promise((resolve) => {
-    onMessage(messaging, (payload) => {
-      resolve(payload);
-    });
+// Foreground message listener
+export const onMessageListener = () =>
+  new Promise((resolve) => {
+    if (!messaging) resolve(null);
+    else onMessage(messaging, (payload) => resolve(payload));
   });
-};
 
 export default app;
-
