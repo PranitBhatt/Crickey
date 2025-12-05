@@ -238,6 +238,21 @@ export const subscribeToLiveMatches = (
   });
 };
 
+// Subscribe to single match (real-time)
+export const subscribeToMatch = (
+  matchId: string,
+  callback: (match: Match | null) => void
+): Unsubscribe => {
+  const docRef = doc(db, 'matches', matchId);
+  return onSnapshot(docRef, (docSnap) => {
+    if (docSnap.exists()) {
+      callback(convertMatch({ id: docSnap.id, ...docSnap.data() }));
+    } else {
+      callback(null);
+    }
+  });
+};
+
 // Subscribe to ball-by-ball (real-time)
 export const subscribeToBallByBall = (
   matchId: string,

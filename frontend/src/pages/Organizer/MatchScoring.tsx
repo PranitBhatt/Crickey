@@ -58,7 +58,7 @@ export const MatchScoring = () => {
     loadData();
 
     // Subscribe to real-time updates
-    const unsubscribe = subscribeToMatch(id, (updatedMatch) => {
+    const unsubscribe = subscribeToMatch(id, (updatedMatch: Match | null) => {
       if (updatedMatch) {
         setMatch(updatedMatch);
         setScore1(updatedMatch.scores[updatedMatch.team1Id] || { runs: 0, wickets: 0, overs: 0 });
