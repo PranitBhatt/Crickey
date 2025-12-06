@@ -3,9 +3,9 @@ FastAPI application entry point.
 Mirrors Program.cs from .NET backend.
 """
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
+from starlette.middleware.cors import CORSMiddleware
 import logging
 
 from app.config import settings
@@ -46,10 +46,15 @@ async def startup_event():
         logger.error(f"Failed to initialize application: {e}")
         raise
 
-# CORS middleware - mirrors .NET "AllowAll" policy
+# CORS middleware - allow localhost and Vercel deployments
+# Using regex pattern to match localhost:5173 and all *.vercel.app domains
+# Replace <MY_VERCEL_DOMAIN> with your actual Vercel domain
+CORS_ORIGIN_REGEX = r"https://.*\.vercel\.app|http://localhost:5173"
+# To add a specific domain, use: r"https://.*\.vercel\.app|https://<MY_VERCEL_DOMAIN>|http://localhost:5173"
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.CORS_ORIGINS,
+    allow_origin_regex=CORS_ORIGIN_REGEX,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -81,16 +86,19 @@ async def root():
 
 @app.get("/health")
 async def health_check():
-    """Health check endpoint"""
-    return {"status": "healthy"}
+    """Health check endpoint for Render"""
+    return {"status": "ok"}
 
 
 if __name__ == "__main__":
     import uvicorn
+    import os
+    # Use PORT environment variable (for Render) or default to 5000
+    port = int(os.getenv("PORT", 5000))
     uvicorn.run(
         "app.main:app",
         host="0.0.0.0",
-        port=5000,
+        port=port,
         reload=settings.DEBUG
     )
 

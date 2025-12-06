@@ -40,6 +40,8 @@ ENV/
 # Firebase credentials
 *service-account-key.json
 *firebase-adminsdk*.json
+serviceAccountKey.json
+service-account-key.json
 
 # Logs
 *.log

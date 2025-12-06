@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from app.schemas.team import TeamDTO
 from app.services.team_service import TeamService
 from app.database import get_db
+from app.auth.dependencies import verify_token
 from google.cloud import firestore
 
 router = APIRouter(prefix="/api/teams", tags=["teams"])
@@ -20,6 +21,7 @@ def get_team_service(db: firestore.Client = Depends(get_db)) -> TeamService:
 @router.post("", status_code=status.HTTP_200_OK)
 async def create_team(
     team: TeamDTO,
+    decoded_token: dict = Depends(verify_token),
     service: TeamService = Depends(get_team_service)
 ):
     """
@@ -62,6 +64,7 @@ async def get_teams_by_tournament(
 async def update_team(
     team_id: str,
     team: TeamDTO,
+    decoded_token: dict = Depends(verify_token),
     service: TeamService = Depends(get_team_service)
 ):
     """
@@ -75,6 +78,7 @@ async def update_team(
 @router.delete("/{team_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_team(
     team_id: str,
+    decoded_token: dict = Depends(verify_token),
     service: TeamService = Depends(get_team_service)
 ):
     """

@@ -10,9 +10,7 @@ import {
   Unsubscribe,
 } from 'firebase/firestore';
 import { db } from './firebase';
-import axios from 'axios';
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+import { apiFetchJSON } from '../utils/api';
 
 export interface PointsTableEntry {
   teamId: string;
@@ -86,7 +84,10 @@ export const getAllPointsTables = async (tournamentId: string): Promise<PointsTa
 
 // Update points table (triggers recalculation)
 export const updatePointsTable = async (tournamentId: string): Promise<void> => {
-  await axios.post(`${API_BASE_URL}/pointsTable/update`, { tournamentId });
+  await apiFetchJSON('/pointsTable/update', {
+    method: 'POST',
+    body: JSON.stringify({ tournamentId }),
+  });
 };
 
 // Subscribe to points table (real-time)

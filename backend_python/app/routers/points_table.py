@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from app.schemas.points_table import PointsTableDTO, UpdatePointsTableRequest
 from app.services.points_table_service import PointsTableService
 from app.database import get_db
+from app.auth.dependencies import verify_token
 from google.cloud import firestore
 
 router = APIRouter(prefix="/api/pointsTable", tags=["points-table"])
@@ -26,6 +27,7 @@ def get_points_table_service(db: firestore.Client = Depends(get_db)) -> PointsTa
 @router.post("/update", status_code=status.HTTP_204_NO_CONTENT)
 async def update_points_table(
     request: UpdatePointsTableRequest,
+    decoded_token: dict = Depends(verify_token),
     service: PointsTableService = Depends(get_points_table_service)
 ):
     """

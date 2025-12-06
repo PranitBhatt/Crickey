@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends, status
 from app.schemas.notification import SendNotificationRequest, SendNotificationToTeamRequest
 from app.services.notification_service import NotificationService
 from app.database import get_db
+from app.auth.dependencies import verify_token
 from google.cloud import firestore
 
 router = APIRouter(prefix="/api/notifications", tags=["notifications"])
@@ -20,6 +21,7 @@ def get_notification_service(db: firestore.Client = Depends(get_db)) -> Notifica
 @router.post("/send", status_code=status.HTTP_204_NO_CONTENT)
 async def send_notification(
     request: SendNotificationRequest,
+    decoded_token: dict = Depends(verify_token),
     service: NotificationService = Depends(get_notification_service)
 ):
     """
@@ -38,6 +40,7 @@ async def send_notification(
 @router.post("/send-to-team", status_code=status.HTTP_204_NO_CONTENT)
 async def send_notification_to_team(
     request: SendNotificationToTeamRequest,
+    decoded_token: dict = Depends(verify_token),
     service: NotificationService = Depends(get_notification_service)
 ):
     """

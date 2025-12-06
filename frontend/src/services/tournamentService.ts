@@ -14,9 +14,7 @@ import {
   Unsubscribe,
 } from 'firebase/firestore';
 import { db } from './firebase';
-import axios from 'axios';
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+import { apiFetchJSON } from '../utils/api';
 
 export interface Tournament {
   id: string;
@@ -87,18 +85,26 @@ export const getTournament = async (id: string): Promise<Tournament | null> => {
 
 // Create tournament
 export const createTournament = async (tournament: TournamentDTO): Promise<string> => {
-  const response = await axios.post(`${API_BASE_URL}/tournaments`, tournament);
-  return response.data.id;
+  const response = await apiFetchJSON<{ id: string }>('/tournaments', {
+    method: 'POST',
+    body: JSON.stringify(tournament),
+  });
+  return response.id;
 };
 
 // Update tournament
 export const updateTournament = async (id: string, tournament: Partial<TournamentDTO>): Promise<void> => {
-  await axios.put(`${API_BASE_URL}/tournaments/${id}`, tournament);
+  await apiFetchJSON(`/tournaments/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(tournament),
+  });
 };
 
 // Delete tournament
 export const deleteTournament = async (id: string): Promise<void> => {
-  await axios.delete(`${API_BASE_URL}/tournaments/${id}`);
+  await apiFetchJSON(`/tournaments/${id}`, {
+    method: 'DELETE',
+  });
 };
 
 // Subscribe to tournaments (real-time)

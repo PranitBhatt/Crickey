@@ -8,9 +8,7 @@ import {
 } from 'firebase/auth';
 import { auth, db } from './firebase';
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
-import axios from 'axios';
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+import { apiFetchJSON } from '../utils/api';
 
 export interface UserProfile {
   uid: string;
@@ -36,6 +34,7 @@ export const signUp = async (
   phone: string
 ): Promise<User> => {
   const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+  
   await updateProfile(userCredential.user, { displayName: name });
   
   // Create user profile in Firestore
@@ -82,10 +81,12 @@ export const updateUserProfile = async (uid: string, updates: Partial<UserProfil
 // Validate Firebase token with backend
 export const validateToken = async (idToken: string): Promise<boolean> => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/auth/validateToken`, {
-      token: idToken,
+    const response = await apiFetchJSON<{ valid: boolean }>('/auth/validateToken', {
+      method: 'POST',
+      body: JSON.stringify({ token: idToken }),
+      skipAuth: true, // This endpoint validates the token itself
     });
-    return response.data.valid === true;
+    return response.valid === true;
   } catch (error) {
     return false;
   }

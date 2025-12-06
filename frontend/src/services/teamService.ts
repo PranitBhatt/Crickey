@@ -11,9 +11,7 @@ import {
   Unsubscribe,
 } from 'firebase/firestore';
 import { db } from './firebase';
-import axios from 'axios';
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+import { apiFetchJSON } from '../utils/api';
 
 export interface Player {
   name: string;
@@ -88,18 +86,26 @@ export const getTeamByCaptain = async (captainUid: string): Promise<Team | null>
 
 // Create team
 export const createTeam = async (team: TeamDTO): Promise<string> => {
-  const response = await axios.post(`${API_BASE_URL}/teams`, team);
-  return response.data.id;
+  const response = await apiFetchJSON<{ id: string }>('/teams', {
+    method: 'POST',
+    body: JSON.stringify(team),
+  });
+  return response.id;
 };
 
 // Update team
 export const updateTeam = async (id: string, team: Partial<TeamDTO>): Promise<void> => {
-  await axios.put(`${API_BASE_URL}/teams/${id}`, team);
+  await apiFetchJSON(`/teams/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(team),
+  });
 };
 
 // Delete team
 export const deleteTeam = async (id: string): Promise<void> => {
-  await axios.delete(`${API_BASE_URL}/teams/${id}`);
+  await apiFetchJSON(`/teams/${id}`, {
+    method: 'DELETE',
+  });
 };
 
 // Subscribe to teams (real-time)

@@ -21,8 +21,11 @@ class Settings(BaseSettings):
     API_PREFIX: str = "/api"
     DEBUG: bool = os.getenv("DEBUG", "False").lower() == "true"
     
-    # CORS
-    CORS_ORIGINS: list[str] = ["*"]  # Allow all origins (matches .NET "AllowAll" policy)
+    # CORS - Allow localhost for development and Vercel for production
+    CORS_ORIGINS: list[str] = [
+        "http://localhost:5173",
+        "https://*.vercel.app"
+    ]  # Allow localhost and Vercel deployments
     
     class Config:
         env_file = ".env"

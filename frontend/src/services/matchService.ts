@@ -11,9 +11,7 @@ import {
   Unsubscribe,
 } from 'firebase/firestore';
 import { db } from './firebase';
-import axios from 'axios';
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+import { apiFetchJSON } from '../utils/api';
 
 export interface MatchScore {
   runs: number;
@@ -174,23 +172,35 @@ export const getMatchesByTeam = async (teamId: string): Promise<Match[]> => {
 
 // Create match
 export const createMatch = async (match: MatchDTO): Promise<string> => {
-  const response = await axios.post(`${API_BASE_URL}/matches`, match);
-  return response.data.id;
+  const response = await apiFetchJSON<{ id: string }>('/matches', {
+    method: 'POST',
+    body: JSON.stringify(match),
+  });
+  return response.id;
 };
 
 // Update match
 export const updateMatch = async (id: string, match: Partial<MatchDTO>): Promise<void> => {
-  await axios.put(`${API_BASE_URL}/matches/${id}`, match);
+  await apiFetchJSON(`/matches/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(match),
+  });
 };
 
 // Update match score
 export const updateMatchScore = async (matchId: string, score: ScoreUpdateDTO): Promise<void> => {
-  await axios.post(`${API_BASE_URL}/matches/${matchId}/score`, score);
+  await apiFetchJSON(`/matches/${matchId}/score`, {
+    method: 'POST',
+    body: JSON.stringify(score),
+  });
 };
 
 // Add ball-by-ball entry
 export const addBallByBall = async (matchId: string, ball: BallByBallDTO): Promise<void> => {
-  await axios.post(`${API_BASE_URL}/matches/${matchId}/ball`, ball);
+  await apiFetchJSON(`/matches/${matchId}/ball`, {
+    method: 'POST',
+    body: JSON.stringify(ball),
+  });
 };
 
 // Get ball-by-ball data for a match

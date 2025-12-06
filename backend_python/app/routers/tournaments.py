@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from app.schemas.tournament import TournamentDTO
 from app.services.tournament_service import TournamentService
 from app.database import get_db
+from app.auth.dependencies import verify_token
 from google.cloud import firestore
 
 router = APIRouter(prefix="/api/tournaments", tags=["tournaments"])
@@ -20,6 +21,7 @@ def get_tournament_service(db: firestore.Client = Depends(get_db)) -> Tournament
 @router.post("", status_code=status.HTTP_200_OK)
 async def create_tournament(
     tournament: TournamentDTO,
+    decoded_token: dict = Depends(verify_token),
     service: TournamentService = Depends(get_tournament_service)
 ):
     """
@@ -61,6 +63,7 @@ async def get_all_tournaments(
 async def update_tournament(
     tournament_id: str,
     tournament: TournamentDTO,
+    decoded_token: dict = Depends(verify_token),
     service: TournamentService = Depends(get_tournament_service)
 ):
     """
@@ -74,6 +77,7 @@ async def update_tournament(
 @router.delete("/{tournament_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_tournament(
     tournament_id: str,
+    decoded_token: dict = Depends(verify_token),
     service: TournamentService = Depends(get_tournament_service)
 ):
     """
