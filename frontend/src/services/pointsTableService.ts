@@ -1,8 +1,7 @@
-import { pointsService } from './pointsService';
-import type { PointsTable, PointsTableEntry } from './pointsService';
+import { pointsService, type PointsTable } from './pointsService';
 
-// Re-export types from pointsService for backward compatibility
-export type { PointsTable, PointsTableEntry } from './pointsService';
+// Re-export PointsTableEntry for backward compatibility (PointsTable is already imported above)
+export type { PointsTableEntry } from './pointsService';
 
 // Get points table for a tournament group
 export const getPointsTable = async (
