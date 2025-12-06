@@ -22,6 +22,5 @@ pydantic==2.5.0
 pydantic-settings==2.1.0
 python-dateutil==2.8.2
 
-# CORS
-python-cors==1.0.0
+# Note: CORS is handled by FastAPI's CORSMiddleware, no separate package needed
 

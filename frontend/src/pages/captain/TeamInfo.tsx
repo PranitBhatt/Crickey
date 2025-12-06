@@ -1,5 +1,4 @@
 import { GlassCard } from '../../components/ui/GlassCard'
-import { Users } from 'lucide-react'
 
 export default function TeamInfo() {
   return (

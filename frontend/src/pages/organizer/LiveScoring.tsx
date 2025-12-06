@@ -1,6 +1,5 @@
 import { GlassCard } from '../../components/ui/GlassCard'
 import { NeonButton } from '../../components/ui/NeonButton'
-import { Target } from 'lucide-react'
 
 export default function LiveScoring() {
   return (

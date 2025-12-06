@@ -1,5 +1,4 @@
 import { GlassCard } from '../../components/ui/GlassCard'
-import { Calendar } from 'lucide-react'
 
 export default function ScheduleView() {
   return (

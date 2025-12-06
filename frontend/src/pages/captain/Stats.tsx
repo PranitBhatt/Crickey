@@ -1,5 +1,4 @@
 import { GlassCard } from '../../components/ui/GlassCard'
-import { BarChart3 } from 'lucide-react'
 
 export default function Stats() {
   return (
