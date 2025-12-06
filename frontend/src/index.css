@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-black text-white antialiased;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-dark-bg-secondary/80 backdrop-blur-md border border-neon-blue/30;
+  }
+  
+  .glass-strong {
+    @apply bg-dark-bg-secondary/90 backdrop-blur-lg border border-neon-blue/50;
+  }
+  
+  .neon-border {
+    @apply border border-neon-blue shadow-neon-sm;
+  }
+  
+  .neon-border-lg {
+    @apply border-2 border-neon-blue shadow-neon;
+  }
+  
+  .neon-text {
+    @apply text-neon-blue drop-shadow-[0_0_8px_rgba(0,183,255,0.8)];
+  }
+  
+  .neon-glow {
+    @apply shadow-neon;
+  }
+  
+  .hover-glow {
+    @apply transition-all duration-300 hover:shadow-neon hover:border-neon-blue-light;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-dark-bg-secondary;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-neon-blue/50 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-neon-blue/70;
+}
+
