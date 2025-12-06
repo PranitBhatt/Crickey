@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     # Database Configuration
     DATABASE_URL: str = os.getenv(
         "DATABASE_URL",
-        "postgresql+asyncpg://user:password@localhost:5432/cricket_tournament"
+        "postgresql://postgres:KrishnakunjPranit33!@34.47.254.213:5432/crickey"
     )
     
     # JWT Configuration
